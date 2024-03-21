@@ -1,6 +1,7 @@
 module.exports = {
-    HOST: process.env.HOST,
-    USER: process.env.USER,
-    PASSWORD: process.env.PASSWORD,
+    HOST: "localhost",
+    USER: "root",
+    DB:"studentapidb",
+    PASSWORD: "1234",
     dialect: 'mysql'
 }; 
