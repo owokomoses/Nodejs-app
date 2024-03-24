@@ -1,18 +1,35 @@
 const db = require("../model/dbConnect")
-const  registrations=db.registrations 
-
+const  registrations =db.registrations 
+const {signAccessToken , signRefreshToken} = require('../helpers/jwtHelper');
+const createHttpError = require("http-errors");
+const {authSchema} = require('../helpers/validateSchema')
 module.exports = {
     addUser: async (req, res, next) => {
         try {
-            let info = {
-                username: req.body.username,
-                password: req.body.password,
-            }
+            // let info = {
+            //     email: req.body.email,
+            //     password: req.body.password,
+            // } 
 
-            const addUser = await
-                registrations.create(info)
-            res.status(200).send(addUser)
+            const { email, password } = await authSchema.validateAsync(req.body);
+            const exists = await registrations.findOne({ where: { email} })
+            if (exists) {
+                throw createHttpError.Conflict('${email} has already been registered')
+            }   
+            const newUser = new registrations({ email, password })
+            const savedUser = await newUser.save()
+
+
+            // const addUser = await registrations.create(info)
+            const accessToken = await signAccessToken(savedUser.id)
+            // res.status(200).send(accessToken)
+
+            res.send({accessToken})
         } catch (error) {
+            console.log(error)
+            
+            if (error.isJoi === true) error.status = 422
+            next(error)
             next(error)
         }
     },
@@ -55,4 +72,26 @@ module.exports = {
         }
     },
     
+    // loginUser: async (req, res, next) => { 
+    //     try {
+    //         const result = await authSchema.validateAsync(req.body);
+    //         const user = await registrations.findOne({ where: { email: result.email } })
+
+    //         if (!user) throw createHttpError.NotFound('User not registered');
+    //         // watching the password
+
+    //         const isMatch = await registrations.isValidPassword(result.password)
+    //         if (!isMatch) throw createHttpError.Unauthorized('Invalid password');
+
+    //         // if password matches , then generate token
+    //         const accessToken = await signAccessToken(user_id);
+    //         const refreshToken = await signRefreshToken(user_id);
+
+    //         res.send({accessToken, refreshToken})
+    //     } catch (error) {
+    //         if (error.isJoi === true)
+    //             return next(createHttpError.BadRequest('Invalid credentials'));
+    //         next(error)
+    //     }
+    // }
 }
