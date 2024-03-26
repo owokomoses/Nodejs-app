@@ -21,7 +21,7 @@ module.exports = {
 
 
             // const addUser = await registrations.create(info)
-            const accessToken = await signAccessToken(savedUser.id)
+            const accessToken = await signAccessToken(savedUser.user_id)
             // res.status(200).send(accessToken)
 
             res.send({accessToken})
@@ -29,7 +29,6 @@ module.exports = {
             console.log(error)
             
             if (error.isJoi === true) error.status = 422
-            next(error)
             next(error)
         }
     },

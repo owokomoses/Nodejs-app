@@ -28,7 +28,7 @@ db.sequelize = sequelize;
 
 db.students = require('./studentModel')(sequelize, DataTypes)
 db.courses = require('./courseModel')(sequelize, DataTypes)
-db.courses = require('./registrationModel')(sequelize, DataTypes)
+db.registrations = require('./registrationModel')(sequelize, DataTypes)
 
 
 
