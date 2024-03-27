@@ -18,9 +18,9 @@ module.exports = {
 getStudent: async (req, res, next) => {
     try {
         let id = req.params.id
-        let Student = await students.findOne({ where: { student_id: id } })
+        let Student = await Students.findOne({ where: { student_id: id } })
 
-        if (!students) {
+        if (!Students) {
             throw (createError(404, "Student not found"))
         }
         res.status(200).send(Student)
