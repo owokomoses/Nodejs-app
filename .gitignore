@@ -1,4 +1,5 @@
-.env
-node_modules
-helpers
-config
+/config
+/helpers
+/dbConnect.js
+/node_modules
+/.env
